@@ -1,0 +1,92 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace Shopping_Cart_Api.Migrations
+{
+    public partial class xyz : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_ShoppingCarts_AspNetUsers_UserId",
+                table: "ShoppingCarts");
+
+            migrationBuilder.DropIndex(
+                name: "IX_ShoppingCarts_UserId",
+                table: "ShoppingCarts");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserId",
+                table: "ShoppingCarts",
+                type: "nvarchar(max)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
+
+            migrationBuilder.AddColumn<string>(
+                name: "ApplicationUserId",
+                table: "ShoppingCarts",
+                type: "nvarchar(450)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<double>(
+                name: "UnitPrice",
+                table: "CartDetails",
+                type: "float",
+                nullable: false,
+                defaultValue: 0.0);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCarts_ApplicationUserId",
+                table: "ShoppingCarts",
+                column: "ApplicationUserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ShoppingCarts_AspNetUsers_ApplicationUserId",
+                table: "ShoppingCarts",
+                column: "ApplicationUserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_ShoppingCarts_AspNetUsers_ApplicationUserId",
+                table: "ShoppingCarts");
+
+            migrationBuilder.DropIndex(
+                name: "IX_ShoppingCarts_ApplicationUserId",
+                table: "ShoppingCarts");
+
+            migrationBuilder.DropColumn(
+                name: "ApplicationUserId",
+                table: "ShoppingCarts");
+
+            migrationBuilder.DropColumn(
+                name: "UnitPrice",
+                table: "CartDetails");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserId",
+                table: "ShoppingCarts",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCarts_UserId",
+                table: "ShoppingCarts",
+                column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ShoppingCarts_AspNetUsers_UserId",
+                table: "ShoppingCarts",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+        }
+    }
+}

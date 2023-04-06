@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shopping_Cart_Api.Data;
+using Shopping_Cart_Api.Helpers;
 using Shopping_Cart_Api.Model;
-using Shopping_Cart_Api.Model.DataManager;
 using Shopping_Cart_Api.Model.Repository;
 using Shopping_Cart_Api.Service;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,10 +25,10 @@ namespace Shopping_Cart_Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IDataRepository<CartCache>, CartManager>();
             services.AddDbContextPool<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             //var redisConfiguration = new RedisConfiguration();
             //Configuration.GetSection("RedisConfiguration").Bind(redisConfiguration);
             //services.AddSingleton(redisConfiguration);
@@ -46,6 +46,7 @@ namespace Shopping_Cart_Api
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddScoped<ICartService, CartService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

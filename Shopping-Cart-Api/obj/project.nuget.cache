@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "FtRYBLhEfYRHERVplti9vF4X8y+0wp8XAynQyZnmAd02PPm4RAgYC1ZeGVGXbAhqhT/7dF9nf/lgz5lLvJCYYw==",
+  "dgSpecHash": "Tz8Xe5pNUILzFqADSUnn6LlmAEA2htrJboiEJa9aAEo8AjT7UbYZswjAfXiDchuzrt1EnZ7ZOgyAQzMPhg/W8Q==",
   "success": true,
-  "projectFilePath": "E:\\learnc#\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
+  "projectFilePath": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\nguye\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
+    "C:\\Users\\nguye\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",

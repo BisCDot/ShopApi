@@ -17,7 +17,12 @@ namespace Shopping_Cart_Api.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<CartCache> CartCaches { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<CartDetail> CartDetails { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<ProductDetail> ProductDetails { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

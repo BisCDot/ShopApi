@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using Shopping_Cart_Api.Attributes;
 using Shopping_Cart_Api.Model;
+using Shopping_Cart_Api.Model.DTOs;
 using Shopping_Cart_Api.Model.Repository;
 using Shopping_Cart_Api.Service;
 using Shopping_Cart_Api.ViewModels;
@@ -10,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Shopping_Cart_Api.Controllers
@@ -17,9 +20,10 @@ namespace Shopping_Cart_Api.Controllers
     [Route("api/[controller]")]
     public class ProductsController : Controller
     {
-        private const string cartListCacheKey = "cartList";
+        private const string cartListCacheKey = "productList";
         private readonly IProductService _productService;
         private readonly IDistributedCache _cache;
+        private static readonly SemaphoreSlim semaphore = new(1, 1);
 
         public ProductsController(IProductService productService, IDistributedCache cache)
         {
@@ -30,10 +34,43 @@ namespace Shopping_Cart_Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var isSuccessResult = await _productService.GetAllProduct();
-            if (isSuccessResult == null)
+            if (_cache.TryGetValue(cartListCacheKey, out IEnumerable<ProductDto>? product))
+            {
+                string startTimeString = "Not found.";
+                var value = await _cache.GetAsync(cartListCacheKey);
+
+                if (value != null)
+                {
+                    startTimeString = Encoding.UTF8.GetString(value);
+                    var valueJson = JsonConvert.DeserializeObject<IEnumerable<ProductDto>>(startTimeString);
+                    return Ok(valueJson);
+                }
+            }
+            else
+            {
+                try
+                {
+                    await semaphore.WaitAsync();
+                    if (_cache.TryGetValue(cartListCacheKey, out product))
+                    {
+                    }
+                    else
+                    {
+                        product = await _productService.GetAllProduct();
+                        var cacheEntryOptions = new DistributedCacheEntryOptions()
+                            .SetSlidingExpiration(TimeSpan.FromSeconds(1800))
+                            .SetAbsoluteExpiration(TimeSpan.FromSeconds(1800));
+                        await _cache.SetAsync(cartListCacheKey, product, cacheEntryOptions);
+                    }
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }
+            if (product == null)
                 return BadRequest();
-            return Json(isSuccessResult);
+            return Json(product);
         }
 
         [HttpGet("{id}", Name = "ProductGet")]

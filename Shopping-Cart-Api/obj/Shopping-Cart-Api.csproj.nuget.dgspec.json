@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\learnc#\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {}
+    "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {}
   },
   "projects": {
-    "E:\\learnc#\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {
+    "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\learnc#\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
+        "projectUniqueName": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
         "projectName": "Shopping-Cart-Api",
-        "projectPath": "E:\\learnc#\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
+        "projectPath": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
         "packagesPath": "C:\\Users\\nguye\\.nuget\\packages\\",
-        "outputPath": "E:\\learnc#\\Shopping-Cart-Api\\obj\\",
+        "outputPath": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
           "C:\\Users\\nguye\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.0, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[3.1.30, )"
@@ -107,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -9,5 +9,6 @@ namespace Shopping_Cart_Api.Model
 {
     public class ApplicationUser : IdentityUser
     {
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

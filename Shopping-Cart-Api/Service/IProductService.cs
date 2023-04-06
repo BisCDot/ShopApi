@@ -1,4 +1,5 @@
 ﻿using Shopping_Cart_Api.Model;
+using Shopping_Cart_Api.Model.DTOs;
 using Shopping_Cart_Api.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Shopping_Cart_Api.Service
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAllProduct();
+        Task<IEnumerable<ProductDto>> GetAllProduct();
 
         Task<Product> GetProductById(Guid id);
 

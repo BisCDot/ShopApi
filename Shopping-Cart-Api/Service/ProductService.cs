@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Shopping_Cart_Api.Data;
 using Shopping_Cart_Api.Model;
+using Shopping_Cart_Api.Model.DTOs;
 using Shopping_Cart_Api.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,15 +18,32 @@ namespace Shopping_Cart_Api.Service
     public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProductService(ApplicationDbContext context)
+        public ProductService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProduct()
+        public async Task<IEnumerable<ProductDto>> GetAllProduct()
         {
-            return await _context.Products.Include(pro => pro.Image).ToArrayAsync();
+            var productDetails = await _context.ProductDetails.ProjectTo<ProductDetailDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var group = productDetails.GroupBy(i => i.ProductId);
+            var result = new List<ProductDto>();
+            foreach (var item in group)
+            {
+                result.Add(new ProductDto
+                {
+                    Id = item.First().ProductId,
+                    ProductName = item.First().ProductName,
+                    Price = item.First().Price,
+                    Images = item.Select(i => i.Images.First().Path).ToList(),
+                    ProductDetailDtos = item.ToList().Select(i => new ProductDetailDto{Id = i.Id,Size = i.Size,Quantity = i.Quantity}).ToList()
+                });
+            }
+
+            return result;
         }
 
         public async Task<Product> GetProductById(Guid id)
@@ -43,12 +64,10 @@ namespace Shopping_Cart_Api.Service
 
             var entity = new Product
             {
-                Id = new Guid(),
-                ProductCode = product.ProductCode,
+                Id = Guid.NewGuid(),
                 ProductName = product.ProductName,
-                Description = product.Description,
                 Price = product.Price,
-                Stock = product.Stock,
+                CategoryId = product.CategoryId,
             };
 
             _context.Products.Add(entity);
@@ -82,8 +101,21 @@ namespace Shopping_Cart_Api.Service
 
                 _context.Images.Add(imageEntity);
             };
+            string valueString = string.Join(",", product.ProductDetails);
+            var size = JsonConvert.DeserializeObject<List<ProductDetail>>(valueString);
+            foreach (var item in size)
+            {
+                var productDetailEntity = new ProductDetail()
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = entity.Id,
+                    Size = item.Size,
+                    Quantity = item.Quantity
+                };
+                _context.ProductDetails.Add(productDetailEntity);
+            }
 
-            bool success = await _context.SaveChangesAsync() == 1 + product.Image.Count;
+            bool success = await _context.SaveChangesAsync() == 1 + product.Image.Count + size.Count;
 
             if (success) return entity.Id.ToString();
             else return message;
@@ -95,17 +127,17 @@ namespace Shopping_Cart_Api.Service
             return 1 == await _context.SaveChangesAsync();
         }
 
-        public async Task<string> EditProductById(Guid id, int stock)
-        {
-            var entity = await _context.Products.FindAsync(id);
+        //public async Task<string> EditProductById(Guid id, int stock)
+        //{
+        //    var entity = await _context.Products.FindAsync(id);
 
-            if (entity.Stock - stock >= 0)
-                entity.Stock = entity.Stock - stock;
-            else return "Unsucessfull";
+        //    //if (entity.Stock - stock >= 0)
+        //    //    entity.Stock = entity.Stock - stock;
+        //    //else return "Unsucessfull";
 
-            bool success = await _context.SaveChangesAsync() == 1;
-            if (success) return entity.Id.ToString();
-            else return "Unsucessfull";
-        }
+        //    //bool success = await _context.SaveChangesAsync() == 1;
+        //    //if (success) return entity.Id.ToString();
+        //    //else return "Unsucessfull";
+        //}
     }
 }
