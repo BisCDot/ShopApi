@@ -8,9 +8,11 @@ namespace Shopping_Cart_Api.Service
     {
         Task<int> AddCart(int qty, Guid productDetailId);
 
-        Task<List<ShoppingCartDto>> GetCartItemsByUserId();
+        Task<IEnumerable<ShoppingCartDto>> GetCartItemsByUserId();
 
         Task<ShoppingCart> GetCart(string userId);
+
+        Task<bool> RemoveItemFromCart(Guid id);
 
         string GetIdCart();
     }

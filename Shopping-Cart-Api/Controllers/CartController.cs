@@ -16,7 +16,7 @@ using System.Threading;
 namespace Shopping_Cart_Api.Controllers
 {
     [Route("api/[controller]")]
-    public class CartController : ControllerBase
+    public class CartController : Controller
     {
         private string cartListCacheKey = "cartList";
         private readonly IDistributedCache _cache;
@@ -39,7 +39,7 @@ namespace Shopping_Cart_Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCart()
         {
-            if (_cache.TryGetValue(cartListCacheKey, out List<ShoppingCartDto>? cartCaches))
+            if (_cache.TryGetValue(cartListCacheKey, out IEnumerable<ShoppingCartDto>? cartCaches))
             {
                 _logger.Log(LogLevel.Information, "cart list found in cache.");
                 string startTimeString = "Not found.";
@@ -48,8 +48,8 @@ namespace Shopping_Cart_Api.Controllers
                 if (value != null)
                 {
                     startTimeString = Encoding.UTF8.GetString(value);
-                    var valueJson = JsonConvert.DeserializeObject<List<ShoppingCartDto>>(startTimeString);
-                    return Ok(valueJson);
+                    var valueJson = JsonConvert.DeserializeObject<IEnumerable<ShoppingCartDto>>(startTimeString);
+                    return Json(valueJson);
                 }
             }
             else
@@ -78,15 +78,14 @@ namespace Shopping_Cart_Api.Controllers
                     semaphore.Release();
                 }
             }
-            return Ok(cartCaches);
+            return Json(cartCaches);
         }
 
         [Authorize]
         [HttpPost("{qty}/{productDetailId}")]
         public async Task<IActionResult> AddCart(int qty, string productDetailId)
         {
-            Guid guidOutput;
-            bool isValid = Guid.TryParse(productDetailId, out guidOutput);
+            bool isValid = Guid.TryParse(productDetailId, out Guid guidOutput);
             if (qty == 0 && !isValid)
                 return BadRequest("Invalid Inputs");
             var isSuccessResult = await _cart.AddCart(qty, guidOutput);
@@ -101,6 +100,22 @@ namespace Shopping_Cart_Api.Controllers
                 //var NewUri = Url.Link("ProductGet",new{id = new Guid(isSuccessResult)});
                 //return Created(NewUri,model);
                 return Ok(new { success = true, Count = isSuccessResult, message = "seccessful add" });
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveCart(Guid id)
+        {
+            var isSuccessResult = await _cart.RemoveItemFromCart(id);
+            if (!isSuccessResult)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                _cache.Remove(cartListCacheKey);
+                return Ok(new { success = true, message = "successful delete" });
             }
         }
     }

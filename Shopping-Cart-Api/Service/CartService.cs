@@ -77,6 +77,23 @@ namespace Shopping_Cart_Api.Service
             return cartItemCount;
         }
 
+        public async Task<bool> RemoveItemFromCart(Guid ItemCartId)
+        {
+            var shoppingCartItem = _context.CartDetails.FirstOrDefault(n => n.Id == ItemCartId);
+            if (shoppingCartItem != null)
+            {
+                if (shoppingCartItem.Quantity > 1)
+                {
+                    shoppingCartItem.Quantity--;
+                }
+                else
+                {
+                    _context.CartDetails.Remove(shoppingCartItem);
+                }
+            }
+            return 1 == _context.SaveChanges();
+        }
+
         public async Task<int> GetCartItemCount(string userId = "")
         {
             if (!string.IsNullOrEmpty(userId))
@@ -97,7 +114,7 @@ namespace Shopping_Cart_Api.Service
             return cart;
         }
 
-        public async Task<List<ShoppingCartDto>> GetCartItemsByUserId()
+        public async Task<IEnumerable<ShoppingCartDto>> GetCartItemsByUserId()
         {
             var userId = GetUserId();
             if (userId == null)

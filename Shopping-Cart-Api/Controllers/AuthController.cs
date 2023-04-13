@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -81,7 +82,6 @@ namespace Shopping_Cart_Api.Controllers
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
-                            
                         });
                     }
                 }
@@ -91,6 +91,19 @@ namespace Shopping_Cart_Api.Controllers
             {
                 return BadRequest(ex);
             }
+        }
+
+        [Authorize]
+        [HttpGet("GetCurrentUser")]
+        public async Task<ActionResult<string>> GetCurrentUser()
+        {
+            var isAuthentication = User.Identity?.IsAuthenticated;
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Ok(new
+            {
+                IsAuthentication = isAuthentication,
+                UserName = userId,
+            });
         }
     }
 }

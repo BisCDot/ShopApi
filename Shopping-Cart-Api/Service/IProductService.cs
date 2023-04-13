@@ -13,7 +13,7 @@ namespace Shopping_Cart_Api.Service
     {
         Task<IEnumerable<ProductDto>> GetAllProduct();
 
-        Task<Product> GetProductById(Guid id);
+        Task<ProductDto> GetProductById(Guid id);
 
         Task<string> AddProduct(ProductViewModel tag);
 

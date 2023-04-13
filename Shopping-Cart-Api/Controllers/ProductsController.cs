@@ -90,15 +90,12 @@ namespace Shopping_Cart_Api.Controllers
 
             //check if returned result is guid or not
             //if guid it was successfull. Otherwise unsuccessfull
-            Guid GuidOutput;
-            bool isGuid = Guid.TryParse(isSuccessResult, out GuidOutput);
+            bool isGuid = Guid.TryParse(isSuccessResult, out Guid GuidOutput);
 
             if (!isGuid)
                 return BadRequest(isSuccessResult);
             else
             {
-                //var NewUri = Url.Link("ProductGet",new{id = new Guid(isSuccessResult)});
-                //return Created(NewUri,model);
                 return Ok(new { success = true, message = "seccessful add" });
             }
         }

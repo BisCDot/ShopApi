@@ -38,17 +38,32 @@ namespace Shopping_Cart_Api.Service
                     Id = item.First().ProductId,
                     ProductName = item.First().ProductName,
                     Price = item.First().Price,
-                    Images = item.Select(i => i.Images.First().Path).ToList(),
-                    ProductDetailDtos = item.ToList().Select(i => new ProductDetailDto{Id = i.Id,Size = i.Size,Quantity = i.Quantity}).ToList()
+                    Images = item.First().Images,
+                    ProductDetailDtos = item.ToList().Select(i => new ProductDetailDto { Id = i.Id, Size = i.Size, Quantity = i.Quantity }).ToList()
                 });
             }
 
             return result;
         }
 
-        public async Task<Product> GetProductById(Guid id)
+        public async Task<ProductDto> GetProductById(Guid id)
         {
-            return await _context.Products.Include(pro => pro.Image).Where(m => m.Id == id).SingleOrDefaultAsync();
+            var productById = await _context.ProductDetails.Where(i => i.Products.Id == id).ProjectTo<ProductDetailDto>(_mapper.ConfigurationProvider).ToArrayAsync();
+            var group = productById;
+            var result = new ProductDto();
+            foreach (var item in productById)
+            {
+                result = new ProductDto()
+                {
+                    Id = item.Id,
+                    ProductName = item.ProductName,
+                    Price = item.Price,
+                    Images = item.Images,
+                    ProductDetailDtos = productById.ToList().Select(i => new ProductDetailDto { Id = i.Id, Size = i.Size, Quantity = i.Quantity }).ToList(),
+                };
+            }
+
+            return result;
         }
 
         public async Task<bool> DeleteProduct(Guid id)

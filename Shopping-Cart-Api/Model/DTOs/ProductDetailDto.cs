@@ -12,7 +12,7 @@ namespace Shopping_Cart_Api.Model.DTOs
 
         public double Price { get; set; }
 
-        public List<string> Images { get; set; }
+        public List<Image> Images { get; set; }
         public List<ProductDetailDto> ProductDetailDtos { get; set; }
     }
 
