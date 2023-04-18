@@ -20,10 +20,7 @@ namespace Shopping_Cart_Api.Model
         public string CustomerPhone { get; set; }
 
         [Required]
-        public TimeSpan OrderDate { get; set; }
-
-        [Required]
-        public string OrderName { get; set; }
+        public DateTime OrderDate { get; set; }
 
         [Required]
         public string PaymentType { get; set; }

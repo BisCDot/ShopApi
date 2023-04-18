@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shopping_Cart_Api.Data;
@@ -19,7 +20,7 @@ namespace Shopping_Cart_Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-        private readonly ApplicationDbContext _appDbcontext;
+        private readonly ApplicationDbContext _context;
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPasswordHasher<ApplicationUser> _hasher;
@@ -34,7 +35,7 @@ namespace Shopping_Cart_Api.Controllers
 
             )
         {
-            _appDbcontext = applicationDbContext;
+            _context = applicationDbContext;
             _userManager = userManager;
             _hasher = hasher;
             _config = config;
@@ -78,6 +79,16 @@ namespace Shopping_Cart_Api.Controllers
                             expires: DateTime.UtcNow.AddHours(60),
                             signingCredentials: cred
                             );
+                        var userNameId = _userManager.FindByNameAsync(user.UserName);
+                        string userId = userNameId.Result.Id;
+                        var exist = await _context.ShoppingCarts.AnyAsync(i => i.UserId == userId);
+
+                        if (!exist)
+                        {
+                            var shoppingCart = new ShoppingCart() { Id = Guid.NewGuid(), UserId = userId };
+                            _context.ShoppingCarts.Add(shoppingCart);
+                        }
+                        _context.SaveChanges();
                         return Ok(new
                         {
                             token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -105,5 +116,6 @@ namespace Shopping_Cart_Api.Controllers
                 UserName = userId,
             });
         }
+
     }
 }

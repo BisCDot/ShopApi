@@ -13,6 +13,7 @@ namespace Shopping_Cart_Api.Service
         Task<ShoppingCart> GetCart(string userId);
 
         Task<bool> RemoveItemFromCart(Guid id);
+        Task ClearShoppingCartAsync();
 
         string GetIdCart();
     }

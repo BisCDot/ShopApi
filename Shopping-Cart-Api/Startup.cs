@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Shopping_Cart_Api.Data;
 using Shopping_Cart_Api.Helpers;
 using Shopping_Cart_Api.Model;
@@ -29,31 +30,19 @@ namespace Shopping_Cart_Api
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-            //var redisConfiguration = new RedisConfiguration();
-            //Configuration.GetSection("RedisConfiguration").Bind(redisConfiguration);
-            //services.AddSingleton(redisConfiguration);
-            //if (!redisConfiguration.Enabled)
-            //    return;
-            //services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConfiguration.ConnectionString));
 
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = Configuration["ConnectionStrings:Redis"];
                 options.InstanceName = "SampleInstance";
             });
-            //services.AddSingleton<IResponseCacheService, ResponseCacheService>();
-            //Add Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             services.AddScoped<ICartService, CartService>();
+            services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IProductService, ProductService>();
-            services.AddControllers().AddJsonOptions(options =>
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
-            {
-                builder.WithOrigins("http://localhost:5001").AllowAnyMethod().AllowAnyHeader();
-            }));
+
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -87,6 +76,16 @@ namespace Shopping_Cart_Api
             {
                 options.AddPolicy(nameof(Constants.SimpleUser), policy => policy.RequireClaim(JwtRegisteredClaimNames.Nonce, Constants.SimpleUser));
             });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop Api", Version = "v1" });
+            });
+            services.AddControllers().AddJsonOptions(options =>
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:5001").AllowAnyMethod().AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,8 +93,10 @@ namespace Shopping_Cart_Api
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
+
             app.UseStaticFiles();
             //create roles needed for application
 
@@ -103,7 +104,6 @@ namespace Shopping_Cart_Api
 
             //Create an account and make it administrator
             AssignAdminRole(userManager).Wait();
-            app.UseHttpsRedirection();
 
             app.UseCors(builder => builder
             .AllowAnyOrigin()

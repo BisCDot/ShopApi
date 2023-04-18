@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {}
+    "D:\\bac\\gitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {}
   },
   "projects": {
-    "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {
+    "D:\\bac\\gitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
+        "projectUniqueName": "D:\\bac\\gitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
         "projectName": "Shopping-Cart-Api",
-        "projectPath": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
-        "packagesPath": "C:\\Users\\nguye\\.nuget\\packages\\",
-        "outputPath": "E:\\filegitclone\\ShopApi\\Shopping-Cart-Api\\obj\\",
+        "projectPath": "D:\\bac\\gitclone\\ShopApi\\Shopping-Cart-Api\\Shopping-Cart-Api.csproj",
+        "packagesPath": "C:\\Users\\Viktor\\.nuget\\packages\\",
+        "outputPath": "D:\\bac\\gitclone\\ShopApi\\Shopping-Cart-Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\nguye\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Viktor\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -82,6 +82,10 @@
               "target": "Package",
               "version": "[13.0.2, )"
             },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.1.4, )"
+            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[6.24.0, )"
@@ -106,7 +110,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

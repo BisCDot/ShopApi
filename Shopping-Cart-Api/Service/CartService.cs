@@ -110,7 +110,10 @@ namespace Shopping_Cart_Api.Service
 
         public async Task<ShoppingCart> GetCart(string userId)
         {
+            
             var cart = await _context.ShoppingCarts.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (cart == null)
+                throw new Exception("cart null");
             return cart;
         }
 
@@ -135,12 +138,21 @@ namespace Shopping_Cart_Api.Service
 
             return result;
         }
+        public async Task ClearShoppingCartAsync()
+        {
+            string userID = GetUserId();
+            var items = await _context.ShoppingCarts.Where(n => n.UserId == userID).ToListAsync();
+            _context.ShoppingCarts.RemoveRange(items);
+            await _context.SaveChangesAsync();
+        }
 
         public string GetIdCart()
         {
             var userId = GetUserId();
             var cart = GetCart(userId);
             string cartId = cart.Result.Id.ToString();
+            
+
             return cartId;
         }
 

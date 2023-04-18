@@ -117,20 +117,23 @@ namespace Shopping_Cart_Api.Service
                 _context.Images.Add(imageEntity);
             };
             string valueString = string.Join(",", product.ProductDetails);
-            var size = JsonConvert.DeserializeObject<List<ProductDetail>>(valueString);
-            foreach (var item in size)
+            var sizes = JsonConvert.DeserializeObject<List<ProductDetail>>(valueString);
+            if (sizes != null)
             {
-                var productDetailEntity = new ProductDetail()
+                foreach (var item in sizes)
                 {
-                    Id = Guid.NewGuid(),
-                    ProductId = entity.Id,
-                    Size = item.Size,
-                    Quantity = item.Quantity
-                };
-                _context.ProductDetails.Add(productDetailEntity);
+                    var productDetailEntity = new ProductDetail()
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = entity.Id,
+                        Size = item.Size,
+                        Quantity = item.Quantity
+                    };
+                    _context.ProductDetails.Add(productDetailEntity);
+                }
             }
 
-            bool success = await _context.SaveChangesAsync() == 1 + product.Image.Count + size.Count;
+            bool success = await _context.SaveChangesAsync() == 1 + product.Image.Count + sizes.Count;
 
             if (success) return entity.Id.ToString();
             else return message;
